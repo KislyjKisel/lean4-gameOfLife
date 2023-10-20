@@ -1,0 +1,28 @@
+{"version": 6,
+ "packagesDir": "lake-packages",
+ "packages":
+ [{"git":
+   {"url": "https://github.com/KislyjKisel/Raylib.lean",
+    "subDir?": null,
+    "rev": "d34e61159cab0a0ad06217e321aa4694f45bf9d1",
+    "opts": {},
+    "name": "raylib",
+    "inputRev?": "main",
+    "inherited": false}},
+  {"git":
+   {"url": "https://github.com/KislyjKisel/libffi-lake",
+    "subDir?": null,
+    "rev": "4d004dc2db416ceab2f33ec7915f306a7256dbb9",
+    "opts": {"disable": ""},
+    "name": "libffi",
+    "inputRev?": "master",
+    "inherited": true}},
+  {"git":
+   {"url": "https://github.com/KislyjKisel/lean-pod",
+    "subDir?": null,
+    "rev": "cafcb99be88c5006720c663634d9e603d91f8cdb",
+    "opts": {},
+    "name": "pod",
+    "inputRev?": "main",
+    "inherited": true}}],
+ "name": "GameOfLife"}
