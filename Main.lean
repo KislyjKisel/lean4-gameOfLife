@@ -110,7 +110,7 @@ def main : IO Unit := do
     drawGrid grid
     drawTextEx font controlsText (.mk controlsTextX controlsTextY) fontSize textSpacing.x .black
     if pause then
-      drawTextEx font pauseText (.mk pauseTextX pauseTextY) fontSize textSpacing.x .black
+      drawTextEx font pauseText (.mk pauseTextX pauseTextY) fontSize textSpacing.x .maroon
     endDrawing
     if ← windowShouldClose then break
   closeWindow rlctx
