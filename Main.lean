@@ -77,10 +77,11 @@ def step : StateT Grid Id Unit := do
 
 def main : IO Unit := do
   let rlctx ← initWindow windowWidth windowHeight "Lean4 Game Of Life".toSubstring
+  let font ← getFontDefault rlctx
   let mut grid : Grid := .mk $ .replicate (.replicate false)
   let mut nextTick : Nat := (← IO.monoMsNow) + tickDelay
   let mut pause : Bool := true
-  let font ← getFontDefault rlctx
+  let mut brush : Option Bool := none
 
   let pauseText := "Paused, press `Space` to unpause"
   let pauseTextSize := measureTextEx font pauseText fontSize textSpacing.x
@@ -93,12 +94,21 @@ def main : IO Unit := do
 
   repeat do
     let time ← IO.monoMsNow
-    if ← isMouseButtonDown .left then
-      let mp := (← getMousePosition) / cellSize
-      let i := mp.y.toFloat.toUInt64.toNat
-      let j := mp.x.toFloat.toUInt64.toNat
-      if h: i < gridH ∧ j < gridW then
-        grid := grid.set i j true h.1 h.2
+    if ← isMouseButtonDown .left
+      then
+        let mp := (← getMousePosition) / cellSize
+        let i := mp.y.toFloat.toUInt64.toNat
+        let j := mp.x.toFloat.toUInt64.toNat
+        if h: i < gridH ∧ j < gridW then
+          if let some val := brush
+            then
+              grid := grid.set i j val h.1 h.2
+            else
+              let val := !grid.get i j h.1 h.2
+              brush := some val
+              grid := grid.set i j val h.1 h.2
+      else
+        brush := none
     if ← isKeyPressed .space then
       pause := !pause
     if time > nextTick then
