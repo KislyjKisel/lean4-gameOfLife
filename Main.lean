@@ -64,11 +64,12 @@ def cell (neighbours : Nat) : Bool → Bool
 | false => neighbours == 3
 
 def step : StateT Grid Id Unit := do
+  let src ← get
   for h1: i in [0:gridH] do
     for h2: j in [0:gridW] do
-      let grid ← get
-      let val := grid.get i j h1.2 h2.2
-      set $ grid.set i j (cell (grid.neighbours i j) val) h1.2 h2.2
+      let dst ← get
+      let val := src.get i j h1.2 h2.2
+      set $ dst.set i j (cell (src.neighbours i j) val) h1.2 h2.2
 
 def main : IO Unit := do
   let rlctx ← initWindow windowWidth windowHeight "Lean4 Game Of Life".toSubstring
