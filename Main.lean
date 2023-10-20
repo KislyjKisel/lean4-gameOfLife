@@ -1,6 +1,7 @@
 import Raymath
 import Raylib
 
+open Pod (Float32)
 open Raymath
 open Raylib
 
@@ -8,8 +9,11 @@ def cellSize : Vector2 := .mk 8 8
 def gridW : Nat := 64
 def gridH : Nat := 64
 def tickDelay : Nat := 400
-def windowWidth : UInt32 := 800
-def windowHeight : UInt32 := 600
+def fontSize : Float32 := 20
+def textSpacing : Vector2 := .mk 5 10
+def windowWidth : UInt32 := (gridW.toFloat32 * cellSize.x).toUInt32
+def windowHeight : UInt32 := Float32.toUInt32 $
+  gridH.toFloat32 * cellSize.y + fontSize * 2 + textSpacing.y * 3
 
 def Vector (α : Type) (n : Nat) : Type := { a : Array α // a.size = n }
 
@@ -77,6 +81,16 @@ def main : IO Unit := do
   let mut nextTick : Nat := (← IO.monoMsNow) + tickDelay
   let mut pause : Bool := true
   let font ← getFontDefault rlctx
+
+  let pauseText := "Paused, press `Space` to unpause"
+  let pauseTextSize := measureTextEx font pauseText fontSize textSpacing.x
+  let pauseTextX := windowWidth.toFloat32 / 2 - pauseTextSize.x / 2
+  let pauseTextY := windowHeight.toFloat32 - textSpacing.y - pauseTextSize.y
+  let controlsText := "Use mouse left button to draw cells"
+  let controlsTextSize := measureTextEx font controlsText fontSize textSpacing.x
+  let controlsTextX := windowWidth.toFloat32 / 2 - controlsTextSize.x / 2
+  let controlsTextY := pauseTextY - textSpacing.y - controlsTextSize.y
+
   repeat do
     let time ← IO.monoMsNow
     if ← isMouseButtonDown .left then
@@ -85,6 +99,8 @@ def main : IO Unit := do
       let j := mp.x.toFloat.toUInt64.toNat
       if h: i < gridH ∧ j < gridW then
         grid := grid.set i j true h.1 h.2
+    if ← isKeyPressed .space then
+      pause := !pause
     if time > nextTick then
       nextTick := nextTick + tickDelay
       if !pause then
@@ -92,16 +108,9 @@ def main : IO Unit := do
     beginDrawing
     clearBackground .raywhite
     drawGrid grid
+    drawTextEx font controlsText (.mk controlsTextX controlsTextY) fontSize textSpacing.x .black
     if pause then
-      let text := "Paused, press `Space` to unpause"
-      let fontSize := 20
-      let spacing := 4
-      let textSize := measureTextEx font text fontSize spacing
-      let x := windowWidth.toFloat32 / 2 - textSize.x / 2
-      let y := windowHeight.toFloat32 - 20 - textSize.y
-      drawTextEx font text { x, y } fontSize spacing .black
-    if ← isKeyPressed .space then
-      pause := !pause
+      drawTextEx font pauseText (.mk pauseTextX pauseTextY) fontSize textSpacing.x .black
     endDrawing
     if ← windowShouldClose then break
   closeWindow rlctx
