@@ -4,7 +4,7 @@
  [{"git":
    {"url": "https://github.com/KislyjKisel/Raylib.lean",
     "subDir?": null,
-    "rev": "d34e61159cab0a0ad06217e321aa4694f45bf9d1",
+    "rev": "d6b2732d6a231128c8865533c9cb6e6f9fdc613a",
     "opts": {},
     "name": "raylib",
     "inputRev?": "main",
