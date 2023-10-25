@@ -76,6 +76,7 @@ def step : StateT Grid Id Unit := do
       set $ dst.set i j (cell (src.neighbours i j) val) h1.2 h2.2
 
 def main : IO Unit := do
+  setConfigFlags .vsyncHint
   let rlctx ← initWindow windowWidth windowHeight "Lean4 Game Of Life".toSubstring
   let font ← getFontDefault rlctx
   let mut grid : Grid := .mk $ .replicate (.replicate false)
